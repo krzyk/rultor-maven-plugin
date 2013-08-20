@@ -29,7 +29,7 @@
  */
 
 /**
- * Rultor Supplementary Maven Plugin.
+ * Rultor Supplementary Maven Plugin, tests.
  *
  * @author Yegor Bugayenko (yegor@tpc2.com)
  * @version $Id$

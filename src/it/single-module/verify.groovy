@@ -28,11 +28,5 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Rultor Supplementary Maven Plugin.
- *
- * @author Yegor Bugayenko (yegor@tpc2.com)
- * @version $Id$
- * @since 0.1
- */
-package com.rultor.maven.plugin;
+def log = new File(basedir, 'build.log')
+assert log.text.contains('χemβly')
