@@ -1,0 +1,3 @@
+# Rultor.com Supplementary Maven Plugin 
+
+To be continued...
