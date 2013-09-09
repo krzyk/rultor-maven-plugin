@@ -30,7 +30,8 @@
 package com.rultor.maven.plugin;
 
 import com.jcabi.aspects.Loggable;
-import com.jcabi.log.Logger;
+import com.rultor.snapshot.XemblyLine;
+import com.rultor.tools.Time;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.maven.plugin.AbstractMojo;
@@ -38,6 +39,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.jfrog.maven.annomojo.annotations.MojoGoal;
 import org.jfrog.maven.annomojo.annotations.MojoPhase;
+import org.xembly.Directives;
 
 /**
  * Steps Mojo.
@@ -46,9 +48,9 @@ import org.jfrog.maven.annomojo.annotations.MojoPhase;
  * @version $Id$
  * @since 1.0
  */
-@MojoGoal("ajc")
-@MojoPhase("process-classes")
 @ToString
+@MojoGoal("steps")
+@MojoPhase("validate")
 @EqualsAndHashCode(callSuper = false)
 @Loggable(Loggable.DEBUG)
 public final class StepsMojo extends AbstractMojo {
@@ -58,7 +60,16 @@ public final class StepsMojo extends AbstractMojo {
      */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        Logger.info(this, "not implemented yet");
+        new XemblyLine(
+            new Directives()
+                .xpath("/snapshot")
+                .addIfAbsent("steps")
+                .add("step")
+                .add("summary")
+                .add("start").set(new Time().toString()).up()
+                .set("maven-rultor-plugin is not implemented yet").up()
+                .add("finish").set(new Time().toString())
+        ).log();
     }
 
 }

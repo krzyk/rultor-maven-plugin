@@ -1,3 +1,3 @@
-# Rultor.com Supplementary Maven Plugin 
+# Rultor.com Supplementary Maven Plugin
 
-To be continued...
+See [github documenation](http://www.github.com/rultor/rultor-maven-plugin).

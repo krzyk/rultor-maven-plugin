@@ -29,66 +29,24 @@
  */
 package com.rultor.maven.plugin;
 
-import org.apache.maven.plugin.testing.AbstractMojoTestCase;
-import org.apache.maven.project.MavenProject;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.rules.TemporaryFolder;
-import org.mockito.Mockito;
-import org.sonatype.aether.RepositorySystemSession;
-import org.sonatype.aether.repository.LocalRepository;
+import org.junit.Test;
 
 /**
  * Test case for {@link StepsMojo}.
  * @author Yegor Bugayenko (yegor@tpc2.com)
  * @version $Id$
  */
-public final class StepsMojoTest extends AbstractMojoTestCase {
-
-    /**
-     * Temp dir.
-     * @checkstyle VisibilityModifier (3 lines)
-     */
-    public final transient TemporaryFolder temp = new TemporaryFolder();
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void setUp() throws Exception {
-        this.temp.create();
-    }
+public final class StepsMojoTest {
 
     /**
      * AjcMojo can weave class files with aspects.
      * @throws Exception If something is wrong
      * @checkstyle ExecutableStatementCount (50 lines)
      */
+    @Test
     public void testClassFilesWeaving() throws Exception {
-        final MavenProject project = Mockito.mock(MavenProject.class);
-        final StepsMojo mojo = this.mojo(project);
-        mojo.execute();
-        MatcherAssert.assertThat(
-            binary.length(),
-            Matchers.not(Matchers.equalTo(size))
-        );
-    }
-
-    /**
-     * Make a mojo.
-     * @param project With this project
-     * @return The mojo to test
-     * @throws Exception If something is wrong
-     */
-    private StepsMojo mojo(final MavenProject project) throws Exception {
         final StepsMojo mojo = new StepsMojo();
-        final RepositorySystemSession session =
-            Mockito.mock(RepositorySystemSession.class);
-        Mockito.doReturn(new LocalRepository(this.temp.newFolder()))
-            .when(session).getLocalRepository();
-        this.setVariableValueToObject(mojo, "project", project);
-        this.setVariableValueToObject(mojo, "session", session);
-        return mojo;
+        mojo.execute();
     }
 
 }
