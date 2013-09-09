@@ -201,31 +201,17 @@
         </dependency>
         <dependency>
             <groupId>com.jcabi</groupId>
-            <artifactId>jcabi-log</artifactId>
-            <version>0.8</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jcabi</groupId>
             <artifactId>jcabi-maven-slf4j</artifactId>
             <version>0.8</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-api</artifactId>
-            <version>1.13.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjtools</artifactId>
-            <version>1.7.3</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -258,16 +244,12 @@
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
             <version>${maven.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-model</artifactId>
-            <version>${maven.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sonatype.sisu</groupId>
-            <artifactId>sisu-guava</artifactId>
-            <version>0.11.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.sonatype.sisu</groupId>
+                    <artifactId>sisu-guava</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
     <profiles>
@@ -297,6 +279,23 @@
                         </plugin>
                     </plugins>
                 </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <id>qulice</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.ning.maven.plugins</groupId>
+                        <artifactId>maven-duplicate-finder-plugin</artifactId>
+                        <configuration>
+                            <ignoredResources combine.children="append">
+                                <ignoredResource>draftv3/schema</ignoredResource>
+                                <ignoredResource>draftv4/schema</ignoredResource>
+                            </ignoredResources>
+                        </configuration>
+                    </plugin>
+                </plugins>
             </build>
         </profile>
     </profiles>
