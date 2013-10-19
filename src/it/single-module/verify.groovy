@@ -30,5 +30,5 @@
 
 def log = new File(basedir, 'build.log')
 assert log != null
-// assert log.text.contains('χemβly')
+assert log.text.contains('χemβly')
 true

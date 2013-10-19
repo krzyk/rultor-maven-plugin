@@ -29,7 +29,11 @@
  */
 package com.rultor.maven.plugin;
 
+import org.apache.maven.execution.ExecutionListener;
+import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.execution.MavenSession;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Test case for {@link StepsMojo}.
@@ -39,14 +43,24 @@ import org.junit.Test;
 public final class StepsMojoTest {
 
     /**
-     * AjcMojo can weave class files with aspects.
+     * StepsMojo will override default ExecutionListener.
      * @throws Exception If something is wrong
-     * @checkstyle ExecutableStatementCount (50 lines)
      */
     @Test
-    public void testClassFilesWeaving() throws Exception {
+    public void shouldOverrideExecutionListener() throws Exception {
         final StepsMojo mojo = new StepsMojo();
+        final MavenSession session = Mockito.mock(MavenSession.class);
+        final MavenExecutionRequest request = Mockito
+            .mock(MavenExecutionRequest.class);
+        final ExecutionListener listener = Mockito
+            .mock(ExecutionListener.class);
+        Mockito.when(session.getRequest()).thenReturn(request);
+        Mockito.when(request.getExecutionListener()).thenReturn(listener);
+        mojo.setSession(session);
         mojo.execute();
+        Mockito
+            .verify(request)
+            .setExecutionListener(Mockito.any(ExecutionListener.class));
     }
 
 }

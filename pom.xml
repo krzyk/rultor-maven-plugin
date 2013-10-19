@@ -197,7 +197,7 @@
         <dependency>
             <groupId>com.jcabi.incubator</groupId>
             <artifactId>xembly</artifactId>
-            <version>0.6.1</version>
+            <version>0.8</version>
         </dependency>
         <dependency>
             <groupId>com.jcabi</groupId>
@@ -214,9 +214,10 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <scope>runtime</scope>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.1.0.Final</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <!-- see http://wiki.jfrog.org/confluence/display/OSS/Maven+Anno+Mojo -->
