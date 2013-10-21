@@ -30,16 +30,17 @@
 package com.rultor.maven.plugin;
 
 import com.jcabi.aspects.Loggable;
-import com.rultor.snapshot.XemblyLine;
-import com.rultor.tools.Time;
-import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.apache.maven.execution.ExecutionListener;
+import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.jfrog.maven.annomojo.annotations.MojoGoal;
+import org.jfrog.maven.annomojo.annotations.MojoParameter;
 import org.jfrog.maven.annomojo.annotations.MojoPhase;
-import org.xembly.Directives;
+import org.jfrog.maven.annomojo.annotations.MojoRequiresProject;
 
 /**
  * Steps Mojo.
@@ -50,33 +51,39 @@ import org.xembly.Directives;
  */
 @ToString
 @MojoGoal("steps")
-@MojoPhase("validate")
+@MojoPhase("initialize")
+@MojoRequiresProject
 @EqualsAndHashCode(callSuper = false)
 @Loggable(Loggable.DEBUG)
 public final class StepsMojo extends AbstractMojo {
+
+    /**
+     * Maven session, to be injected by Maven itself.
+     */
+    @MojoParameter(
+        expression = "${session}",
+        required = true,
+        readonly = true,
+        description = "Maven session"
+    )
+    private transient MavenSession session;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public void execute() throws MojoFailureException {
-        this.goal("maven-rultor-plugin is not implemented yet");
+        final MavenExecutionRequest request = this.session.getRequest();
+        final ExecutionListener listener = request.getExecutionListener();
+        request.setExecutionListener(new XemblyExecutionListener(listener));
     }
 
     /**
-     * Goal started (just a stub, not a real method).
-     * @param name Name of goal
+     * Set session.
+     * @param sess Session to set.
      */
-    private void goal(@NotNull final String name) {
-        new XemblyLine(
-            new Directives()
-                .xpath("/snapshot")
-                .addIfAbsent("steps")
-                .add("step")
-                .add("start").set(new Time().toString()).up()
-                .add("summary").set(name).up()
-                .add("finish").set(new Time().toString())
-        ).log();
+    public void setSession(final MavenSession sess) {
+        this.session = sess;
     }
 
 }

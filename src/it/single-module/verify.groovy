@@ -28,7 +28,16 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-def log = new File(basedir, 'build.log')
-assert log != null
-// assert log.text.contains('χemβly')
-true
+import com.rexsl.test.XhtmlMatchers
+import com.rultor.snapshot.Snapshot
+import org.hamcrest.MatcherAssert
+
+MatcherAssert.assertThat(
+    new Snapshot(new FileInputStream(new File(basedir, 'build.log'))).xml(),
+    XhtmlMatchers.hasXPaths(
+        '/snapshot/steps/step/start',
+        '/snapshot/steps/step/summary',
+        '/snapshot/steps/step/duration',
+        '/snapshot/steps/step/finish'
+    )
+)
