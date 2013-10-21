@@ -186,6 +186,20 @@
                     </dependency>
                 </dependencies>
             </plugin>
+            <plugin>
+                <artifactId>maven-invoker-plugin</artifactId>
+                <configuration>
+                    <!-- logs break rultor parsing, because they produce Xembly directives -->
+                    <streamLogs>false</streamLogs>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.rultor</groupId>
+                        <artifactId>rultor-spi</artifactId>
+                        <version>1.0-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
