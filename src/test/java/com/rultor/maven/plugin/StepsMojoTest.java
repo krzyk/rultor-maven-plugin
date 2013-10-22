@@ -39,6 +39,7 @@ import org.mockito.Mockito;
  * Test case for {@link StepsMojo}.
  * @author Yegor Bugayenko (yegor@tpc2.com)
  * @version $Id$
+ * @since 0.1
  */
 public final class StepsMojoTest {
 
@@ -47,20 +48,20 @@ public final class StepsMojoTest {
      * @throws Exception If something is wrong
      */
     @Test
-    public void shouldOverrideExecutionListener() throws Exception {
+    public void overridesExecutionListener() throws Exception {
         final StepsMojo mojo = new StepsMojo();
         final MavenSession session = Mockito.mock(MavenSession.class);
-        final MavenExecutionRequest request = Mockito
-            .mock(MavenExecutionRequest.class);
-        final ExecutionListener listener = Mockito
-            .mock(ExecutionListener.class);
+        final MavenExecutionRequest request =
+            Mockito.mock(MavenExecutionRequest.class);
+        final ExecutionListener listener =
+            Mockito.mock(ExecutionListener.class);
         Mockito.when(session.getRequest()).thenReturn(request);
         Mockito.when(request.getExecutionListener()).thenReturn(listener);
         mojo.setSession(session);
         mojo.execute();
-        Mockito
-            .verify(request)
-            .setExecutionListener(Mockito.any(ExecutionListener.class));
+        Mockito.verify(request).setExecutionListener(
+            Mockito.any(ExecutionListener.class)
+        );
     }
 
 }

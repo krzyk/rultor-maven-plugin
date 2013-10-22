@@ -34,131 +34,175 @@ import com.rultor.tools.Exceptions;
 import com.rultor.tools.Time;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Level;
 import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.ExecutionListener;
 import org.xembly.Directives;
 
 /**
- * Listener that submits Xemblies.
+ * Reports projects.
  *
- * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
+ * @author Yegor Bugayenko (yegor@tpc2.com)
  * @version $Id$
- * @since 1.0
+ * @since 0.2
+ * @checkstyle MultipleStringLiterals (500 lines)
  */
 @SuppressWarnings("PMD.TooManyMethods")
-final class XemblyExecutionListener implements ExecutionListener {
+final class XemblyProjects implements ExecutionListener {
 
     /**
-     * Start times of given goal inside artifacts.
+     * Start times of given projects.
      */
     private final transient ConcurrentMap<String, Long> times =
         new ConcurrentHashMap<String, Long>(0);
 
     /**
-     * Target execution listener.
+     * Target execution origin.
      */
-    private final transient ExecutionListener listener;
+    private final transient ExecutionListener origin;
 
     /**
      * Constructor.
      *
      * @param lstnr Listener to call.
      */
-    public XemblyExecutionListener(final ExecutionListener lstnr) {
-        this.listener = lstnr;
+    XemblyProjects(final ExecutionListener lstnr) {
+        this.origin = lstnr;
     }
 
     @Override
     public void projectDiscoveryStarted(final ExecutionEvent event) {
-        this.listener.projectDiscoveryStarted(event);
+        this.origin.projectDiscoveryStarted(event);
     }
 
     @Override
     public void sessionStarted(final ExecutionEvent event) {
-        this.listener.sessionStarted(event);
+        this.origin.sessionStarted(event);
     }
 
     @Override
     public void sessionEnded(final ExecutionEvent event) {
-        this.listener.sessionEnded(event);
+        this.origin.sessionEnded(event);
     }
 
     @Override
     public void projectSkipped(final ExecutionEvent event) {
-        this.listener.projectSkipped(event);
+        final String name = XemblyProjects.identifier(event);
+        new XemblyLine(
+            new Directives()
+                .xpath("/snapshot").strict(1)
+                .addIf("steps").add("step")
+                .attr("id", name)
+                .add("summary")
+                .set(String.format("project `%s` skipped", name)).up()
+                .add("start").set(new Time().toString()).up()
+                .add("finish").set(new Time().toString()).up()
+                .add("level").set(Level.INFO.toString())
+        ).log();
+        this.origin.mojoStarted(event);
     }
 
     @Override
     public void projectStarted(final ExecutionEvent event) {
-        this.listener.projectStarted(event);
+        final String name = XemblyProjects.identifier(event);
+        final Time start = new Time();
+        this.times.put(name, start.millis());
+        new XemblyLine(
+            new Directives()
+                .xpath("/snapshot").strict(1)
+                .addIf("steps").add("step")
+                .attr("id", name)
+                .add("summary")
+                .set(String.format("`%s` running...", name))
+                .up()
+                .add("start").set(start.toString()).up()
+        ).log();
+        this.origin.projectStarted(event);
     }
 
     @Override
     public void projectSucceeded(final ExecutionEvent event) {
-        this.listener.projectSucceeded(event);
+        final String name = XemblyProjects.identifier(event);
+        if (this.times.containsKey(name)) {
+            final long start = this.times.get(name);
+            final Time end = new Time();
+            new XemblyLine(
+                new Directives()
+                    .xpath("/snapshot/steps").strict(1)
+                    .xpath(String.format("step[@id='%s']/summary", name))
+                    .set(String.format("`%s`", name)).up()
+                    .add("finish").set(end.toString()).up()
+                    .add("level").set(Level.INFO.toString()).up()
+                    .add("duration").set(Long.toString(end.millis() - start))
+            ).log();
+        }
+        this.origin.projectSucceeded(event);
     }
 
     @Override
     public void projectFailed(final ExecutionEvent event) {
-        this.listener.projectFailed(event);
+        final String name = XemblyProjects.identifier(event);
+        new XemblyLine(
+            new Directives()
+                .xpath(String.format("/snapshot/steps/step[@id=%s]", name))
+                .add("exception").add("class")
+                .set(event.getException().getClass().getCanonicalName()).up()
+                .add("stacktrace")
+                .set(Exceptions.stacktrace(event.getException())).up()
+                .add("level").set(Level.SEVERE.toString()).up()
+                .add("cause").set(Exceptions.message(event.getException()))
+        ).log();
+        this.origin.projectFailed(event);
     }
 
     @Override
     public void mojoSkipped(final ExecutionEvent event) {
-        this.listener.mojoSkipped(event);
+        this.origin.mojoSkipped(event);
     }
 
     @Override
     public void mojoStarted(final ExecutionEvent event) {
-        final Time start = new Time();
-        this.times.put(this.identifier(event), start.millis());
-        new XemblyLine(
-            new Directives()
-                .xpath("/snapshot")
-                .strict(1)
-                .addIf("steps")
-                .add("step")
-                .attr("id", this.identifier(event))
-                .add("summary")
-                .set(
-                    String.format(
-                        "mojo `%s` running",
-                        this.identifier(event)
-                    )
-                )
-                .up()
-                .add("start").set(start.toString()).up()
-        ).log();
-        this.listener.mojoStarted(event);
+        this.origin.mojoStarted(event);
     }
 
     @Override
     public void mojoSucceeded(final ExecutionEvent event) {
-        if (this.times.containsKey(this.identifier(event))) {
-            final long start = this.times.get(this.identifier(event));
-            final Time end = new Time();
-            new XemblyLine(
-                new Directives()
-                    .xpath("/snapshot/steps")
-                    .strict(1)
-                    .xpath(
-                        String.format(
-                            "step[@id='%s']/summary",
-                            this.identifier(event)
-                        )
-                    )
-                    .set(
-                        String.format(
-                            "target `%s` finished", this.identifier(event)
-                        )
-                    )
-                    .up()
-                    .add("finish").set(end.toString()).up()
-                    .add("duration")
-                    .set(Long.toString(end.millis() - start))
-            ).log();
-        }
-        this.listener.mojoSucceeded(event);
+        this.origin.mojoSucceeded(event);
+    }
+
+    @Override
+    public void mojoFailed(final ExecutionEvent event) {
+        this.origin.mojoFailed(event);
+    }
+
+    @Override
+    public void forkStarted(final ExecutionEvent event) {
+        this.origin.forkStarted(event);
+    }
+
+    @Override
+    public void forkSucceeded(final ExecutionEvent event) {
+        this.origin.forkSucceeded(event);
+    }
+
+    @Override
+    public void forkFailed(final ExecutionEvent event) {
+        this.origin.forkFailed(event);
+    }
+
+    @Override
+    public void forkedProjectStarted(final ExecutionEvent event) {
+        this.origin.forkedProjectStarted(event);
+    }
+
+    @Override
+    public void forkedProjectSucceeded(final ExecutionEvent event) {
+        this.origin.forkedProjectSucceeded(event);
+    }
+
+    @Override
+    public void forkedProjectFailed(final ExecutionEvent event) {
+        this.origin.forkedProjectFailed(event);
     }
 
     /**
@@ -167,62 +211,11 @@ final class XemblyExecutionListener implements ExecutionListener {
      * @param event Event to identify.
      * @return Identifier.
      */
-    private String identifier(final ExecutionEvent event) {
+    private static String identifier(final ExecutionEvent event) {
         return String.format(
-            "%s:%s:%s",
-            event.getMojoExecution().getGroupId(),
-            event.getMojoExecution().getArtifactId(),
-            event.getMojoExecution().getGoal()
+            "%s:%s",
+            event.getProject().getGroupId(),
+            event.getProject().getArtifactId()
         );
-    }
-
-    @Override
-    public void mojoFailed(final ExecutionEvent event) {
-        new XemblyLine(
-            new Directives().xpath(
-                String.format(
-                    "/snapshot/steps/step[@id=%s]",
-                    this.identifier(event)
-                )
-            )
-                .add("exception")
-                .add("class")
-                .set(event.getException().getClass().getCanonicalName())
-                .up()
-                .add("stacktrace")
-                .set(Exceptions.stacktrace(event.getException())).up()
-                .add("cause").set(Exceptions.message(event.getException()))
-        ).log();
-        this.listener.mojoFailed(event);
-    }
-
-    @Override
-    public void forkStarted(final ExecutionEvent event) {
-        this.listener.forkStarted(event);
-    }
-
-    @Override
-    public void forkSucceeded(final ExecutionEvent event) {
-        this.listener.forkSucceeded(event);
-    }
-
-    @Override
-    public void forkFailed(final ExecutionEvent event) {
-        this.listener.forkFailed(event);
-    }
-
-    @Override
-    public void forkedProjectStarted(final ExecutionEvent event) {
-        this.listener.forkedProjectStarted(event);
-    }
-
-    @Override
-    public void forkedProjectSucceeded(final ExecutionEvent event) {
-        this.listener.forkedProjectSucceeded(event);
-    }
-
-    @Override
-    public void forkedProjectFailed(final ExecutionEvent event) {
-        this.listener.forkedProjectFailed(event);
     }
 }

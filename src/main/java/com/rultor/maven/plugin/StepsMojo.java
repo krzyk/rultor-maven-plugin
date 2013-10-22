@@ -36,7 +36,6 @@ import org.apache.maven.execution.ExecutionListener;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -46,7 +45,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  *
  * @author Yegor Bugayenko (yegor@tpc2.com)
  * @version $Id$
- * @since 1.0
+ * @since 0.1
  */
 @ToString
 @Mojo(
@@ -64,18 +63,20 @@ public final class StepsMojo extends AbstractMojo {
     private transient MavenSession session;
 
     @Override
-    public void execute() throws MojoFailureException {
+    public void execute() {
         final MavenExecutionRequest request = this.session.getRequest();
-        final ExecutionListener listener = request.getExecutionListener();
-        request.setExecutionListener(new XemblyExecutionListener(listener));
+        ExecutionListener listener = request.getExecutionListener();
+        listener = new XemblyMojos(listener);
+        listener = new XemblyProjects(listener);
+        request.setExecutionListener(listener);
     }
 
     /**
      * Set session.
-     * @param sess Session to set.
+     * @param ssn Session to set.
      */
-    public void setSession(final MavenSession sess) {
-        this.session = sess;
+    public void setSession(final MavenSession ssn) {
+        this.session = ssn;
     }
 
 }
