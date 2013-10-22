@@ -16,7 +16,7 @@ Add it to the list of plugins in your parent module:
       <plugin>
         <groupId>com.rultor</groupId>
         <artifactId>rultor-maven-plugin</artifactId>
-        <version>0.1</version>
+        <version>0.2</version>
         <executions>
           <execution>
             <goals>
@@ -32,4 +32,4 @@ Add it to the list of plugins in your parent module:
 
 By default the plugin reports successfull completion of every goal.
 
-More details: [maven.rultor.com](http://maven.rultor.com)
+More details: [maven-plugin.rultor.com](http://maven-plugin.rultor.com)
