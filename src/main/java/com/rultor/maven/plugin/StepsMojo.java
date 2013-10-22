@@ -37,10 +37,9 @@ import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
-import org.jfrog.maven.annomojo.annotations.MojoGoal;
-import org.jfrog.maven.annomojo.annotations.MojoParameter;
-import org.jfrog.maven.annomojo.annotations.MojoPhase;
-import org.jfrog.maven.annomojo.annotations.MojoRequiresProject;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 
 /**
  * Steps Mojo.
@@ -50,9 +49,10 @@ import org.jfrog.maven.annomojo.annotations.MojoRequiresProject;
  * @since 1.0
  */
 @ToString
-@MojoGoal("steps")
-@MojoPhase("initialize")
-@MojoRequiresProject
+@Mojo(
+    name = "steps", defaultPhase = LifecyclePhase.INITIALIZE,
+    requiresProject = true
+)
 @EqualsAndHashCode(callSuper = false)
 @Loggable(Loggable.DEBUG)
 public final class StepsMojo extends AbstractMojo {
@@ -60,17 +60,9 @@ public final class StepsMojo extends AbstractMojo {
     /**
      * Maven session, to be injected by Maven itself.
      */
-    @MojoParameter(
-        expression = "${session}",
-        required = true,
-        readonly = true,
-        description = "Maven session"
-    )
+    @Component
     private transient MavenSession session;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void execute() throws MojoFailureException {
         final MavenExecutionRequest request = this.session.getRequest();

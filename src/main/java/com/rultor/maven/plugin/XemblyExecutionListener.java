@@ -68,41 +68,26 @@ final class XemblyExecutionListener implements ExecutionListener {
         this.listener = lstnr;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void projectDiscoveryStarted(final ExecutionEvent event) {
         this.listener.projectDiscoveryStarted(event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void sessionStarted(final ExecutionEvent event) {
         this.listener.sessionStarted(event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void sessionEnded(final ExecutionEvent event) {
         this.listener.sessionEnded(event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void projectSkipped(final ExecutionEvent event) {
         this.listener.projectSkipped(event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void projectStarted(final ExecutionEvent event) {
         this.listener.projectStarted(event);
@@ -113,25 +98,16 @@ final class XemblyExecutionListener implements ExecutionListener {
         this.listener.projectSucceeded(event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void projectFailed(final ExecutionEvent event) {
         this.listener.projectFailed(event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void mojoSkipped(final ExecutionEvent event) {
         this.listener.mojoSkipped(event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void mojoStarted(final ExecutionEvent event) {
         final Time start = new Time();
@@ -156,9 +132,6 @@ final class XemblyExecutionListener implements ExecutionListener {
         this.listener.mojoStarted(event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void mojoSucceeded(final ExecutionEvent event) {
         if (this.times.containsKey(this.identifier(event))) {
@@ -203,9 +176,6 @@ final class XemblyExecutionListener implements ExecutionListener {
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void mojoFailed(final ExecutionEvent event) {
         new XemblyLine(
@@ -226,49 +196,31 @@ final class XemblyExecutionListener implements ExecutionListener {
         this.listener.mojoFailed(event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void forkStarted(final ExecutionEvent event) {
         this.listener.forkStarted(event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void forkSucceeded(final ExecutionEvent event) {
         this.listener.forkSucceeded(event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void forkFailed(final ExecutionEvent event) {
         this.listener.forkFailed(event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void forkedProjectStarted(final ExecutionEvent event) {
         this.listener.forkedProjectStarted(event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void forkedProjectSucceeded(final ExecutionEvent event) {
         this.listener.forkedProjectSucceeded(event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void forkedProjectFailed(final ExecutionEvent event) {
         this.listener.forkedProjectFailed(event);
