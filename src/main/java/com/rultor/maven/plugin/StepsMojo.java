@@ -39,6 +39,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * Steps Mojo.
@@ -62,12 +63,28 @@ public final class StepsMojo extends AbstractMojo {
     @Component
     private transient MavenSession session;
 
+    /**
+     * Do we need to report mojos?
+     */
+    @Parameter(defaultValue = "false")
+    private transient boolean mojos;
+
+    /**
+     * Do we need to report projects?
+     */
+    @Parameter(defaultValue = "true")
+    private transient boolean projects;
+
     @Override
     public void execute() {
         final MavenExecutionRequest request = this.session.getRequest();
         ExecutionListener listener = request.getExecutionListener();
-        listener = new XemblyMojos(listener);
-        listener = new XemblyProjects(listener);
+        if (this.mojos) {
+            listener = new XemblyMojos(listener);
+        }
+        if (this.projects) {
+            listener = new XemblyProjects(listener);
+        }
         request.setExecutionListener(listener);
     }
 

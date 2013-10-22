@@ -38,6 +38,7 @@ MatcherAssert.assertThat(
         '/snapshot/steps/step/start',
         '/snapshot/steps/step/summary',
         '/snapshot/steps/step/duration',
-        '/snapshot/steps/step/finish'
+        '/snapshot/steps/step/finish',
+        '//step[contains(summary, "maven-install-plugin")]'
     )
 )
