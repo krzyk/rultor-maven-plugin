@@ -64,13 +64,15 @@ public final class StepsMojo extends AbstractMojo {
     private transient MavenSession session;
 
     /**
-     * Do we need to report mojos?
+     * Do we need to report mojos.
+     * @since 0.2
      */
     @Parameter(defaultValue = "false")
     private transient boolean mojos;
 
     /**
-     * Do we need to report projects?
+     * Do we need to report projects.
+     * @since 0.2
      */
     @Parameter(defaultValue = "true")
     private transient boolean projects;
