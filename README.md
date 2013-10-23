@@ -35,11 +35,11 @@ the project is a multi-module one. And it reports every individual goal if
 the project doesn't have any sub-modules.
 
 By default the plugin is turned off. It is supposed to be turned on
-only in continuous integration environment, using this command line
-argument:
+only in [Rultor rule](http://doc.rultor.com/index.html#rule),
+using this command line argument:
 
 ```
-$ mvn -Drultor.skip=false install
+$ mvn -Drultor.skip=false clean install
 ```
 
 More details: [maven-plugin.rultor.com](http://maven-plugin.rultor.com)

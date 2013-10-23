@@ -9,7 +9,7 @@ Add it to your `pom.xml`:
       <plugin>
         <groupId>com.rultor</groupId>
         <artifactId>rultor-maven-plugin</artifactId>
-        <version>0.1</version>
+        <version>0.3</version>
         <executions>
           <execution>
             <goals>
@@ -23,4 +23,9 @@ Add it to your `pom.xml`:
 </project>
 ```
 
-That's it.
+Then, in the [Rultor rule](http://doc.rultor.com/index.html#rule)
+start your Maven build with this command line argument:
+
+```
+$ mvn clean install -Drultor.skip=false
+```
