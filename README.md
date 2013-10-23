@@ -12,13 +12,15 @@ Add it to the list of plugins in your parent module:
 ```xml
 <project>
   <build>
-    <plugins>
-      <plugin>
-        <groupId>com.rultor</groupId>
-        <artifactId>rultor-maven-plugin</artifactId>
-        <version>0.3</version>
-      </plugin>
-    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.rultor</groupId>
+          <artifactId>rultor-maven-plugin</artifactId>
+          <version>0.3.1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 </project>
 ```
