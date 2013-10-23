@@ -69,6 +69,7 @@ public final class StepsMojo extends AbstractMojo {
 
     /**
      * Maven project, to be injected by Maven itself.
+     * @since 0.3
      */
     @Component
     private transient MavenProject project;
@@ -109,6 +110,7 @@ public final class StepsMojo extends AbstractMojo {
     /**
      * Set project.
      * @param prj Project to inject
+     * @since 0.3
      */
     public void setProject(final MavenProject prj) {
         this.project = prj;
@@ -116,6 +118,7 @@ public final class StepsMojo extends AbstractMojo {
 
     /**
      * Inject listener.
+     * @since 0.3
      */
     private void inject() {
         final MavenExecutionRequest request = this.session.getRequest();
