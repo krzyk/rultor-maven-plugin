@@ -1,4 +1,8 @@
-# Rultor.com Supplementary Maven Plugin
+# Rultor Supplementary Plugin
+
+This plugin is intended to be used in projects, which are
+built by [rultor.com](http://www.rultor.com),
+hosted continuous integration environment.
 
 Add it to your `pom.xml`:
 
