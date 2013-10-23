@@ -27,9 +27,9 @@ Add it to your `pom.xml`:
 </project>
 ```
 
-Then, in the [Rultor rule](http://doc.rultor.com/index.html#rule)
-start your Maven build with this command line argument:
+Then, in [rultor.com rule](http://doc.rultor.com/index.html#rule)
+prepend your Maven build goals with `rultor:steps`:
 
 ```
-$ mvn clean install -Drultor.skip=false
+$ mvn rultor:steps clean install
 ```

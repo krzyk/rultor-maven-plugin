@@ -17,13 +17,6 @@ Add it to the list of plugins in your parent module:
         <groupId>com.rultor</groupId>
         <artifactId>rultor-maven-plugin</artifactId>
         <version>0.3</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>steps</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
@@ -35,11 +28,11 @@ the project is a multi-module one. And it reports every individual goal if
 the project doesn't have any sub-modules.
 
 By default the plugin is turned off. It is supposed to be turned on
-only in [Rultor rule](http://doc.rultor.com/index.html#rule),
-using this command line argument:
+only in [rultor rule](http://doc.rultor.com/index.html#rule),
+by explicit initialization of `rultor:steps` goal:
 
 ```
-$ mvn -Drultor.skip=false clean install
+$ mvn rultor:steps clean install
 ```
 
 More details: [maven-plugin.rultor.com](http://maven-plugin.rultor.com)

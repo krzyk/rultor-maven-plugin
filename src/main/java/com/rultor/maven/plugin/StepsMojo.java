@@ -78,7 +78,7 @@ public final class StepsMojo extends AbstractMojo {
      * Skip execution.
      * @since 0.3
      */
-    @Parameter(property = "rultor.skip", defaultValue = "true")
+    @Parameter(property = "rultor.skip", defaultValue = "false")
     private transient boolean skip;
 
     /**
