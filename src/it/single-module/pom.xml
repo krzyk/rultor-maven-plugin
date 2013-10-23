@@ -47,8 +47,6 @@
                         </goals>
                         <configuration>
                             <skip>false</skip>
-                            <mojos>true</mojos>
-                            <projects>true</projects>
                         </configuration>
                     </execution>
                 </executions>

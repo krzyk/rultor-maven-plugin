@@ -30,6 +30,16 @@ Add it to the list of plugins in your parent module:
 </project>
 ```
 
-By default the plugin reports successfull completion of every goal.
+By default the plugin reports successfull completion of every sub-project, if
+the project is a multi-module one. And it reports every individual goal if
+the project doesn't have any sub-modules.
+
+By default the plugin is turned off. It is supposed to be turned on
+only in continuous integration environment, using this command line
+argument:
+
+```
+$ mvn -Drultor.skip=false install
+```
 
 More details: [maven-plugin.rultor.com](http://maven-plugin.rultor.com)

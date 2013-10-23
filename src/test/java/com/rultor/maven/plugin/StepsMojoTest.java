@@ -32,6 +32,7 @@ package com.rultor.maven.plugin;
 import org.apache.maven.execution.ExecutionListener;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.project.MavenProject;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -57,6 +58,7 @@ public final class StepsMojoTest {
             Mockito.mock(ExecutionListener.class);
         Mockito.when(session.getRequest()).thenReturn(request);
         Mockito.when(request.getExecutionListener()).thenReturn(listener);
+        mojo.setProject(new MavenProject());
         mojo.setSession(session);
         mojo.execute();
         Mockito.verify(request).setExecutionListener(

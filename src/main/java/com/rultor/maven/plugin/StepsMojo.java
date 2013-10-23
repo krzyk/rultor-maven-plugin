@@ -42,6 +42,7 @@ import org.apache.maven.plugins.annotations.InstantiationStrategy;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 
 /**
  * Steps Mojo.
@@ -67,25 +68,17 @@ public final class StepsMojo extends AbstractMojo {
     private transient MavenSession session;
 
     /**
+     * Maven project, to be injected by Maven itself.
+     */
+    @Component
+    private transient MavenProject project;
+
+    /**
      * Skip execution.
      * @since 0.3
      */
     @Parameter(property = "rultor.skip", defaultValue = "true")
     private transient boolean skip;
-
-    /**
-     * Do we need to report mojos.
-     * @since 0.2
-     */
-    @Parameter(defaultValue = "false")
-    private transient boolean mojos;
-
-    /**
-     * Do we need to report projects.
-     * @since 0.2
-     */
-    @Parameter(defaultValue = "true")
-    private transient boolean projects;
 
     /**
      * Listener already injected.
@@ -98,22 +91,10 @@ public final class StepsMojo extends AbstractMojo {
         if (this.injected) {
             Logger.info(this, "Xembly listener already injected");
         } else if (this.skip) {
-            Logger.info(
-                this,
-                "execution skipped, use -Drultor.skip=false to enable it"
-            );
+            Logger.info(this, "Execution skipped, use -Drultor.skip=false");
         } else {
-            final MavenExecutionRequest request = this.session.getRequest();
-            ExecutionListener listener = request.getExecutionListener();
-            if (this.mojos) {
-                listener = new XemblyMojos(listener);
-            }
-            if (this.projects) {
-                listener = new XemblyProjects(listener);
-            }
-            request.setExecutionListener(listener);
+            this.inject();
             Logger.info(this, "Xembly execution listener injected");
-            this.injected = true;
         }
     }
 
@@ -123,6 +104,29 @@ public final class StepsMojo extends AbstractMojo {
      */
     public void setSession(final MavenSession ssn) {
         this.session = ssn;
+    }
+
+    /**
+     * Set project.
+     * @param prj Project to inject
+     */
+    public void setProject(final MavenProject prj) {
+        this.project = prj;
+    }
+
+    /**
+     * Inject listener.
+     */
+    private void inject() {
+        final MavenExecutionRequest request = this.session.getRequest();
+        ExecutionListener listener = request.getExecutionListener();
+        if (this.project.getModules().isEmpty()) {
+            listener = new XemblyMojos(listener);
+        } else {
+            listener = new XemblyProjects(listener);
+        }
+        request.setExecutionListener(listener);
+        this.injected = true;
     }
 
 }
