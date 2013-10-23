@@ -30,6 +30,7 @@
 package com.rultor.maven.plugin;
 
 import com.jcabi.aspects.Loggable;
+import com.jcabi.log.Logger;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.maven.execution.ExecutionListener;
@@ -37,6 +38,7 @@ import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.InstantiationStrategy;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -51,7 +53,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 @ToString
 @Mojo(
     name = "steps", defaultPhase = LifecyclePhase.INITIALIZE,
-    requiresProject = true
+    requiresProject = true, threadSafe = true,
+    instantiationStrategy = InstantiationStrategy.SINGLETON
 )
 @EqualsAndHashCode(callSuper = false)
 @Loggable(Loggable.DEBUG)
@@ -65,9 +68,9 @@ public final class StepsMojo extends AbstractMojo {
 
     /**
      * Skip execution.
-     * @since 0.2
+     * @since 0.3
      */
-    @Parameter(defaultValue = "true")
+    @Parameter(property = "rultor.skip", defaultValue = "true")
     private transient boolean skip;
 
     /**
@@ -84,9 +87,22 @@ public final class StepsMojo extends AbstractMojo {
     @Parameter(defaultValue = "true")
     private transient boolean projects;
 
+    /**
+     * Listener already injected.
+     * @since 0.3
+     */
+    private transient boolean injected;
+
     @Override
     public void execute() {
-        if (!this.skip) {
+        if (this.injected) {
+            Logger.info(this, "Xembly listener already injected");
+        } else if (this.skip) {
+            Logger.info(
+                this,
+                "execution skipped, use -Drultor.skip=false to enable it"
+            );
+        } else {
             final MavenExecutionRequest request = this.session.getRequest();
             ExecutionListener listener = request.getExecutionListener();
             if (this.mojos) {
@@ -96,6 +112,8 @@ public final class StepsMojo extends AbstractMojo {
                 listener = new XemblyProjects(listener);
             }
             request.setExecutionListener(listener);
+            Logger.info(this, "Xembly execution listener injected");
+            this.injected = true;
         }
     }
 

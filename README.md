@@ -16,7 +16,7 @@ Add it to the list of plugins in your parent module:
       <plugin>
         <groupId>com.rultor</groupId>
         <artifactId>rultor-maven-plugin</artifactId>
-        <version>0.2</version>
+        <version>0.3</version>
         <executions>
           <execution>
             <goals>

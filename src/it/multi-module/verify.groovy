@@ -35,10 +35,8 @@ import org.hamcrest.MatcherAssert
 MatcherAssert.assertThat(
     new Snapshot(new FileInputStream(new File(basedir, 'build.log'))).xml(),
     XhtmlMatchers.hasXPaths(
-        '/snapshot/steps/step/start',
-        '/snapshot/steps/step/summary',
-        '/snapshot/steps/step/duration',
-        '/snapshot/steps/step/finish',
-        '//step[contains(summary, "maven-surefire-plugin")]'
+        '/snapshot/steps[count(step) = 2]',
+        '/snapshot/steps/step[@id="com.rultor:first"]',
+        '/snapshot/steps/step[@id="com.rultor:second"]'
     )
 )
