@@ -1,6 +1,5 @@
-<?xml version="1.0"?>
-<!--
- * Copyright (c) 2012-2013, JCabi.com
+/**
+ * Copyright (c) 2009-2013, rultor.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +9,7 @@
  * disclaimer. 2) Redistributions in binary form must reproduce the above
  * copyright notice, this list of conditions and the following
  * disclaimer in the documentation and/or other materials provided
- * with the distribution. 3) Neither the name of the jcabi.com nor
+ * with the distribution. 3) Neither the name of the rultor.com nor
  * the names of its contributors may be used to endorse or promote
  * products derived from this software without specific prior written
  * permission.
@@ -27,32 +26,13 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
- -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>@project.groupId@</groupId>
-    <artifactId>single-module</artifactId>
-    <name>single-module</name>
-    <version>1.0-SNAPSHOT</version>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>@project.groupId@</groupId>
-                <artifactId>@project.artifactId@</artifactId>
-                <version>@project.version@</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>steps</goal>
-                        </goals>
-                        <configuration>
-                            <skip>false</skip>
-                            <mojos>true</mojos>
-                            <projects>true</projects>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-</project>
+ */
+
+import com.rexsl.test.XhtmlMatchers
+import com.rultor.snapshot.Snapshot
+import org.hamcrest.MatcherAssert
+
+MatcherAssert.assertThat(
+    new Snapshot(new FileInputStream(new File(basedir, 'build.log'))).xml(),
+    XhtmlMatchers.hasXPaths('/snapshot[count(steps) = 0]')
+)

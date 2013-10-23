@@ -64,6 +64,13 @@ public final class StepsMojo extends AbstractMojo {
     private transient MavenSession session;
 
     /**
+     * Skip execution.
+     * @since 0.2
+     */
+    @Parameter(defaultValue = "true")
+    private transient boolean skip;
+
+    /**
      * Do we need to report mojos.
      * @since 0.2
      */
@@ -79,15 +86,17 @@ public final class StepsMojo extends AbstractMojo {
 
     @Override
     public void execute() {
-        final MavenExecutionRequest request = this.session.getRequest();
-        ExecutionListener listener = request.getExecutionListener();
-        if (this.mojos) {
-            listener = new XemblyMojos(listener);
+        if (!this.skip) {
+            final MavenExecutionRequest request = this.session.getRequest();
+            ExecutionListener listener = request.getExecutionListener();
+            if (this.mojos) {
+                listener = new XemblyMojos(listener);
+            }
+            if (this.projects) {
+                listener = new XemblyProjects(listener);
+            }
+            request.setExecutionListener(listener);
         }
-        if (this.projects) {
-            listener = new XemblyProjects(listener);
-        }
-        request.setExecutionListener(listener);
     }
 
     /**
