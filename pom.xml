@@ -250,7 +250,7 @@
                 <artifactId>maven-invoker-plugin</artifactId>
                 <configuration>
                     <!-- logs break rultor parsing, because they produce Xembly directives -->
-                    <streamLogs>true</streamLogs>
+                    <streamLogs>false</streamLogs>
                 </configuration>
                 <dependencies>
                     <dependency>
