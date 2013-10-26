@@ -214,10 +214,11 @@ final class XemblyMojos implements ExecutionListener {
      */
     private static String identifier(final ExecutionEvent event) {
         return String.format(
-            "%s:%s:%s",
+            "%s:%s:%s:%s",
             event.getMojoExecution().getGroupId(),
             event.getMojoExecution().getArtifactId(),
-            event.getMojoExecution().getGoal()
+            event.getMojoExecution().getGoal(),
+            event.getMojoExecution().getExecutionId()
         );
     }
 }
