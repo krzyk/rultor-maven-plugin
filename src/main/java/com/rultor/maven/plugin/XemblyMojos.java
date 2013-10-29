@@ -109,13 +109,14 @@ final class XemblyMojos implements ExecutionListener {
     @Override
     public void mojoSkipped(final ExecutionEvent event) {
         final String name = XemblyMojos.identifier(event);
+        final String label = XemblyMojos.label(event);
         new XemblyLine(
             new Directives()
                 .xpath("/snapshot").strict(1)
                 .addIf("steps").add("step")
                 .attr("id", name)
                 .add("summary")
-                .set(String.format("`%s` skipped", name)).up()
+                .set(String.format("%s skipped", label)).up()
                 .add("start").set(new Time().toString()).up()
                 .add("finish").set(new Time().toString()).up()
                 .add("level").set(Level.INFO.toString())
@@ -128,13 +129,14 @@ final class XemblyMojos implements ExecutionListener {
         final String name = XemblyMojos.identifier(event);
         final Time start = new Time();
         this.times.put(name, start.millis());
+        final String label = XemblyMojos.label(event);
         new XemblyLine(
             new Directives()
                 .xpath("/snapshot").strict(1)
                 .addIf("steps").add("step")
                 .attr("id", name)
                 .add("summary")
-                .set(String.format("`%s` running...", name))
+                .set(String.format("%s running...", label))
                 .up()
                 .add("start").set(start.toString()).up()
         ).log();
@@ -144,6 +146,7 @@ final class XemblyMojos implements ExecutionListener {
     @Override
     public void mojoSucceeded(final ExecutionEvent event) {
         final String name = XemblyMojos.identifier(event);
+        final String label = XemblyMojos.label(event);
         if (this.times.containsKey(name)) {
             final long start = this.times.get(name);
             final Time end = new Time();
@@ -151,7 +154,7 @@ final class XemblyMojos implements ExecutionListener {
                 new Directives()
                     .xpath("/snapshot/steps").strict(1)
                     .xpath(String.format("step[@id='%s']/summary", name))
-                    .set(String.format("`%s`", name)).up()
+                    .set(label).up()
                     .add("finish").set(end.toString()).up()
                     .add("level").set(Level.INFO.toString()).up()
                     .add("duration").set(Long.toString(end.millis() - start))
@@ -219,6 +222,20 @@ final class XemblyMojos implements ExecutionListener {
             event.getMojoExecution().getArtifactId(),
             event.getMojoExecution().getGoal(),
             event.getMojoExecution().getExecutionId()
+        );
+    }
+
+    /**
+     * Label of given event.
+     *
+     * @param event Event to identify.
+     * @return Label.
+     */
+    private static String label(final ExecutionEvent event) {
+        return String.format(
+            "%s:%s",
+            event.getMojoExecution().getArtifactId(),
+            event.getMojoExecution().getGoal()
         );
     }
 }

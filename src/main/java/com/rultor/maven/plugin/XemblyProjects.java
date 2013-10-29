@@ -88,13 +88,14 @@ final class XemblyProjects implements ExecutionListener {
     @Override
     public void projectSkipped(final ExecutionEvent event) {
         final String name = XemblyProjects.identifier(event);
+        final String label = XemblyProjects.label(event);
         new XemblyLine(
             new Directives()
                 .xpath("/snapshot").strict(1)
                 .addIf("steps").add("step")
                 .attr("id", name)
                 .add("summary")
-                .set(String.format("project `%s` skipped", name)).up()
+                .set(String.format("%s skipped", label)).up()
                 .add("start").set(new Time().toString()).up()
                 .add("finish").set(new Time().toString()).up()
                 .add("level").set(Level.INFO.toString())
@@ -107,13 +108,14 @@ final class XemblyProjects implements ExecutionListener {
         final String name = XemblyProjects.identifier(event);
         final Time start = new Time();
         this.times.put(name, start.millis());
+        final String label = XemblyProjects.label(event);
         new XemblyLine(
             new Directives()
                 .xpath("/snapshot").strict(1)
                 .addIf("steps").add("step")
                 .attr("id", name)
                 .add("summary")
-                .set(String.format("`%s` running...", name))
+                .set(String.format("%s running...", label))
                 .up()
                 .add("start").set(start.toString()).up()
         ).log();
@@ -123,6 +125,7 @@ final class XemblyProjects implements ExecutionListener {
     @Override
     public void projectSucceeded(final ExecutionEvent event) {
         final String name = XemblyProjects.identifier(event);
+        final String label = XemblyProjects.label(event);
         if (this.times.containsKey(name)) {
             final long start = this.times.get(name);
             final Time end = new Time();
@@ -130,7 +133,7 @@ final class XemblyProjects implements ExecutionListener {
                 new Directives()
                     .xpath("/snapshot/steps").strict(1)
                     .xpath(String.format("step[@id='%s']/summary", name))
-                    .set(String.format("`%s`", name)).up()
+                    .set(label).up()
                     .add("finish").set(end.toString()).up()
                     .add("level").set(Level.INFO.toString()).up()
                     .add("duration").set(Long.toString(end.millis() - start))
@@ -217,5 +220,14 @@ final class XemblyProjects implements ExecutionListener {
             event.getProject().getGroupId(),
             event.getProject().getArtifactId()
         );
+    }
+
+    /**
+     * Label of given event.
+     * @param event Event to identify.
+     * @return Label
+     */
+    private static String label(final ExecutionEvent event) {
+        return event.getProject().getArtifactId();
     }
 }
